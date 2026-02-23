@@ -1,0 +1,5 @@
+period,account,cost_center,actual,prior
+2025-12,Revenue,SMB EMEA,4680000,5050000
+2025-12,COGS,Support,980000,910000
+2025-12,Opex,R&D,2310000,2050000
+2025-12,Headcount,Product Team,412,379

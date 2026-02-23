@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+.venv/
+
+# Node
+node_modules/
+frontend/dist/
+
+# Data artifacts
+backend/data/vector_store/*.faiss
+backend/data/vector_store/*.json
+
+# OS
+.DS_Store
