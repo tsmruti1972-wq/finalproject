@@ -12,6 +12,35 @@ const TASK_OPTIONS: Array<{ label: string; value: TaskType }> = [
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/chat';
 
+function buildChatPreview(responseText: string): string {
+  const lines = responseText
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  const contentLines = lines.filter((line) => {
+    const lower = line.toLowerCase();
+    return ![
+      'key insights',
+      'drivers and impacts',
+      'assumptions made',
+      'risks and uncertainties',
+      'suggested follow up questions',
+      'suggested follow-up questions',
+      'sources used',
+    ].includes(lower);
+  });
+
+  const firstPoint = contentLines.find((line) => line.startsWith('-')) ?? contentLines[0] ?? 'Response generated.';
+  const secondPoint =
+    contentLines.find((line, idx) => idx > 0 && line !== firstPoint && !line.startsWith('[Doc')) ??
+    'I organized the full response into the required sections.';
+
+  const clean = (text: string) => text.replace(/^\-\s*/, '').trim();
+
+  return `${clean(firstPoint)} ${clean(secondPoint)} Please refer to the side panel for more details.`;
+}
+
 export default function App() {
   const [taskType, setTaskType] = useState<TaskType>('variance_explanation');
   const [contextAssumptions, setContextAssumptions] = useState('');
@@ -90,7 +119,7 @@ export default function App() {
       const data: ChatResponse = await res.json();
       const assistantEntry: ChatMessage = {
         role: 'assistant',
-        text: data.response_text,
+        text: buildChatPreview(data.response_text),
         timestamp: new Date().toLocaleTimeString(),
       };
 
