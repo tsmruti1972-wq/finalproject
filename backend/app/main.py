@@ -27,6 +27,11 @@ def health() -> dict[str, str]:
     return {"status": "ok"}
 
 
+@app.get("/")
+def root() -> dict[str, str]:
+    return {"message": "Financial Decision Support Copilot API is running", "health": "/health", "chat": "/chat"}
+
+
 @app.post("/chat", response_model=ChatResponse)
 def chat(req: ChatRequest) -> ChatResponse:
     if not req.user_message.strip():
