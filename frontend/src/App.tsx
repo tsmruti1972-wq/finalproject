@@ -198,18 +198,17 @@ export default function App() {
                 <pre>{msg.text}</pre>
               </div>
             ))}
-          </div>
-
-          <div className="chat-input-row">
-            <textarea
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              rows={4}
-              placeholder="Enter your request for the selected task"
-            />
-            <button disabled={!canSubmit} onClick={submit}>
-              {loading ? 'Submitting...' : 'Submit'}
-            </button>
+            <div className="chat-input-row">
+              <textarea
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                rows={4}
+                placeholder="Enter your follow-up request for the selected task"
+              />
+              <button disabled={!canSubmit} onClick={submit}>
+                {loading ? 'Submitting...' : 'Submit'}
+              </button>
+            </div>
           </div>
           {error ? <p className="error">{error}</p> : null}
         </main>
