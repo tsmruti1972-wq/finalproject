@@ -120,6 +120,17 @@ button:hover:not(:disabled) {
   box-shadow: 0 5px 14px rgba(178, 34, 52, 0.25);
 }
 
+button.secondary-btn {
+  background: linear-gradient(135deg, #f7fbff 0%, #e8f0fb 100%);
+  color: var(--blue-900);
+  border: 1px solid #bfd0ea;
+  box-shadow: none;
+}
+
+button.secondary-btn:hover:not(:disabled) {
+  box-shadow: 0 4px 10px rgba(30, 78, 145, 0.12);
+}
+
 button:disabled {
   background: #97a4b5;
   cursor: not-allowed;

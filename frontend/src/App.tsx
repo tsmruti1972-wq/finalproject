@@ -54,6 +54,32 @@ export default function App() {
 
   const canSubmit = useMemo(() => message.trim().length > 0 && !loading, [loading, message]);
 
+  const loadDemoCsv = async () => {
+    setError('');
+    try {
+      const res = await fetch(`${import.meta.env.BASE_URL}demo-finance-variance.csv`);
+      if (!res.ok) {
+        throw new Error('Could not load demo CSV.');
+      }
+      const csvText = await res.text();
+      Papa.parse<Record<string, unknown>>(csvText, {
+        header: true,
+        skipEmptyLines: true,
+        complete: (results) => {
+          if (!results.data || results.data.length === 0) {
+            setError('Demo CSV is empty or invalid.');
+            return;
+          }
+          setCsvRows(results.data);
+          setCsvName(`Demo finance variance CSV (${results.data.length} rows)`);
+        },
+        error: () => setError('Could not parse demo CSV.'),
+      });
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Could not load demo CSV.');
+    }
+  };
+
   const onFileUpload = (file: File | null) => {
     setError('');
     if (!file) {
@@ -160,6 +186,9 @@ export default function App() {
             accept=".csv"
             onChange={(e) => onFileUpload(e.target.files?.[0] ?? null)}
           />
+          <button type="button" className="secondary-btn" onClick={loadDemoCsv}>
+            Load Demo CSV
+          </button>
           <p className="muted">{csvName}</p>
 
           <label className="label">Context and assumptions</label>
