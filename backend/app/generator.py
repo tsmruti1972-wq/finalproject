@@ -157,18 +157,23 @@ def generate_response(
 
     api_key = os.getenv("OPENAI_API_KEY")
     if api_key and OpenAI is not None:
-        client = OpenAI(api_key=api_key)
-        model = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
-        completion = client.chat.completions.create(
-            model=model,
-            temperature=0.1,
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_prompt},
-            ],
-        )
-        model_text = completion.choices[0].message.content or ""
-        return _ensure_template(model_text, retrieved_docs)
+        try:
+            client = OpenAI(api_key=api_key)
+            model = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+            completion = client.chat.completions.create(
+                model=model,
+                temperature=0.1,
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_prompt},
+                ],
+            )
+            model_text = completion.choices[0].message.content or ""
+            return _ensure_template(model_text, retrieved_docs)
+        except Exception:
+            # Gracefully degrade to the local grounded fallback when the external model
+            # is unavailable (quota, rate limit, transient network, etc.).
+            pass
 
     fallback = _fallback_response(task_type, user_message, context_assumptions, csv_rows, retrieved_docs)
     return _ensure_template(fallback, retrieved_docs)
