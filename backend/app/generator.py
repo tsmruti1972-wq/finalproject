@@ -160,15 +160,24 @@ def generate_response(
         retrieved_docs=retrieved_docs,
     )
 
-    api_key = os.getenv("LLM_API_KEY") or os.getenv("OPENAI_API_KEY") or os.getenv("GROQ_API_KEY")
-    base_url = os.getenv("LLM_BASE_URL") or os.getenv("OPENAI_BASE_URL") or os.getenv("GROQ_BASE_URL")
+    def _clean_env(*keys: str) -> str | None:
+        for key in keys:
+            value = os.getenv(key)
+            if value is not None:
+                cleaned = value.strip()
+                if cleaned:
+                    return cleaned
+        return None
+
+    api_key = _clean_env("LLM_API_KEY", "OPENAI_API_KEY", "GROQ_API_KEY")
+    base_url = _clean_env("LLM_BASE_URL", "OPENAI_BASE_URL", "GROQ_BASE_URL")
     if api_key and OpenAI is not None:
         try:
             client_kwargs = {"api_key": api_key}
             if base_url:
                 client_kwargs["base_url"] = base_url
             client = OpenAI(**client_kwargs)
-            model = os.getenv("LLM_MODEL") or os.getenv("OPENAI_MODEL") or "gpt-4o-mini"
+            model = _clean_env("LLM_MODEL", "OPENAI_MODEL") or "gpt-4o-mini"
             completion = client.chat.completions.create(
                 model=model,
                 temperature=0.1,
@@ -179,7 +188,7 @@ def generate_response(
             )
             model_text = completion.choices[0].message.content or ""
             return _ensure_template(model_text, retrieved_docs)
-        except (OpenAIError, RateLimitError, APIError, APIConnectionError, APITimeoutError):
+        except (OpenAIError, RateLimitError, APIError, APIConnectionError, APITimeoutError, ValueError):
             # Gracefully degrade to the local grounded fallback when the external model
             # is unavailable (quota, rate limit, transient network, etc.).
             pass
