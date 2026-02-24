@@ -146,6 +146,27 @@ button:disabled {
   margin: 4px 0 0;
 }
 
+.demo-preview {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f7fbff;
+  padding: 8px;
+}
+
+.demo-preview-title {
+  margin: 0 0 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--blue-900);
+}
+
+.demo-preview pre {
+  max-height: 140px;
+  overflow: auto;
+  font-size: 12px;
+  line-height: 1.3;
+}
+
 .chat-thread {
   flex: 1;
   overflow-y: auto;

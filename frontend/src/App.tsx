@@ -51,6 +51,8 @@ export default function App() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [latestResponse, setLatestResponse] = useState('');
+  const [demoCsvPreview, setDemoCsvPreview] = useState('');
+  const [showDemoPreview, setShowDemoPreview] = useState(false);
 
   const canSubmit = useMemo(() => message.trim().length > 0 && !loading, [loading, message]);
 
@@ -77,6 +79,26 @@ export default function App() {
       });
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Could not load demo CSV.');
+    }
+  };
+
+  const toggleDemoPreview = async () => {
+    setError('');
+    if (showDemoPreview) {
+      setShowDemoPreview(false);
+      return;
+    }
+    try {
+      if (!demoCsvPreview) {
+        const res = await fetch(`${import.meta.env.BASE_URL}demo-finance-variance.csv`);
+        if (!res.ok) {
+          throw new Error('Could not load demo CSV preview.');
+        }
+        setDemoCsvPreview(await res.text());
+      }
+      setShowDemoPreview(true);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Could not load demo CSV preview.');
     }
   };
 
@@ -189,6 +211,15 @@ export default function App() {
           <button type="button" className="secondary-btn" onClick={loadDemoCsv}>
             Load Demo CSV
           </button>
+          <button type="button" className="secondary-btn" onClick={toggleDemoPreview}>
+            {showDemoPreview ? 'Hide Demo Preview' : 'Preview Demo CSV'}
+          </button>
+          {showDemoPreview ? (
+            <div className="demo-preview">
+              <p className="demo-preview-title">Demo CSV preview</p>
+              <pre>{demoCsvPreview}</pre>
+            </div>
+          ) : null}
           <p className="muted">{csvName}</p>
 
           <label className="label">Context and assumptions</label>
