@@ -11,6 +11,10 @@ const TASK_OPTIONS: Array<{ label: string; value: TaskType }> = [
 ];
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/chat';
+const DEMO_CONTEXT =
+  'Month-end variance review for December. Cloud vendor credits are one-time and should be separated from recurring run-rate impacts. Use conservative CFO-ready language and call out assumptions clearly.';
+const DEMO_PROMPT =
+  'Explain the December revenue, COGS, and Opex variances versus budget in CFO-ready language. Separate one-time vs recurring impacts, state assumptions, and identify follow-up questions.';
 
 function buildChatPreview(responseText: string): string {
   const lines = responseText
@@ -74,6 +78,9 @@ export default function App() {
           }
           setCsvRows(results.data);
           setCsvName(`Demo finance variance CSV (${results.data.length} rows)`);
+          setTaskType('variance_explanation');
+          setContextAssumptions(DEMO_CONTEXT);
+          setMessage(DEMO_PROMPT);
         },
         error: () => setError('Could not parse demo CSV.'),
       });
