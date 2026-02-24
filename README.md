@@ -76,13 +76,15 @@ npm run dev
 
 Frontend URL: `http://localhost:5173`
 
-## Optional OpenAI model usage
+## Optional external model usage (OpenAI/Groq compatible)
 
-The backend uses OpenAI when `OPENAI_API_KEY` is set; otherwise it runs a deterministic grounded fallback response generator.
+The backend uses an external LLM when `LLM_API_KEY` is set (or compatible legacy variables are present); otherwise it runs a deterministic grounded fallback response generator.
 
 ```bash
-export OPENAI_API_KEY="your_key"
-export OPENAI_MODEL="gpt-4o-mini"
+export LLM_API_KEY="your_key"
+export LLM_MODEL="gpt-4o-mini"
+# Optional for OpenAI-compatible providers (Groq/OpenRouter/etc.)
+export LLM_BASE_URL="https://api.groq.com/openai/v1"
 ```
 
 ## Using the app

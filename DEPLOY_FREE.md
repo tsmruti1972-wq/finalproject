@@ -49,8 +49,18 @@ PYTHONPATH=. python scripts/ingest_kb.py && uvicorn app.main:app --host 0.0.0.0 
 ```
 
 6. Add environment variables (optional):
-- `OPENAI_API_KEY` (if you want live OpenAI responses)
-- `OPENAI_MODEL` (optional, e.g. `gpt-4o-mini`)
+- `LLM_API_KEY` (if you want live model responses)
+- `LLM_MODEL` (for OpenAI use `gpt-4o-mini`; for Groq use a Groq model id)
+- `LLM_BASE_URL` (only for OpenAI-compatible non-OpenAI providers, e.g. Groq)
+
+Examples:
+- OpenAI:
+  - `LLM_API_KEY=<openai key>`
+  - `LLM_MODEL=gpt-4o-mini`
+- Groq:
+  - `LLM_API_KEY=<groq key>`
+  - `LLM_BASE_URL=https://api.groq.com/openai/v1`
+  - `LLM_MODEL=llama-3.1-8b-instant`
 
 After deploy, copy your backend URL, for example:
 `https://your-backend.onrender.com/chat`
