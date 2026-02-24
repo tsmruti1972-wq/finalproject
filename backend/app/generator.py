@@ -74,13 +74,28 @@ def _extract_doc_refs(text: str) -> set[int]:
     return {int(m.group(1)) for m in re.finditer(r"\[Doc\s+(\d+)\]", text)}
 
 
+def _normalize_heading_text(text: str) -> str:
+    cleaned = text.strip().strip("*").strip()
+    cleaned = re.sub(r"\s+", " ", cleaned.lower())
+    cleaned = cleaned.replace("follow-up", "follow up")
+    return cleaned
+
+
+def _has_heading(output: str, heading: str) -> bool:
+    target = _normalize_heading_text(heading)
+    for line in output.splitlines():
+        if _normalize_heading_text(line) == target:
+            return True
+    return False
+
+
 def _ensure_template(text: str, retrieved_docs: list[dict[str, Any]]) -> str:
     output = text.strip()
     for heading in REQUIRED_HEADINGS:
-        if heading not in output:
+        if not _has_heading(output, heading):
             output += f"\n\n{heading}\n- Unable to generate this section from available evidence."
 
-    if "Sources used" not in output:
+    if not _has_heading(output, "Sources used"):
         refs = sorted(_extract_doc_refs(output))
         lines = ["Sources used"]
         for ref in refs:
