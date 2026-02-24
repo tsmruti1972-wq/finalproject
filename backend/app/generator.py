@@ -159,10 +159,14 @@ def generate_response(
         retrieved_docs=retrieved_docs,
     )
 
-    api_key = os.getenv("OPENAI_API_KEY")
+    api_key = os.getenv("OPENAI_API_KEY") or os.getenv("GROQ_API_KEY")
+    base_url = os.getenv("OPENAI_BASE_URL") or os.getenv("GROQ_BASE_URL")
     if api_key and OpenAI is not None:
         try:
-            client = OpenAI(api_key=api_key)
+            client_kwargs = {"api_key": api_key}
+            if base_url:
+                client_kwargs["base_url"] = base_url
+            client = OpenAI(**client_kwargs)
             model = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
             completion = client.chat.completions.create(
                 model=model,
