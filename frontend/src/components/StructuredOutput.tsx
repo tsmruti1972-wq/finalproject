@@ -13,9 +13,21 @@ function parseSections(text: string): Record<string, string> {
   const lines = text.split('\n');
   let current = '';
 
+  const normalize = (value: string) =>
+    value
+      .trim()
+      .replace(/^\*+|\*+$/g, '')
+      .replace(/:$/, '')
+      .replace(/\s+/g, ' ')
+      .replace(/follow-up/i, 'follow up')
+      .toLowerCase();
+
   for (const rawLine of lines) {
     const line = rawLine.trim();
-    const heading = REQUIRED_HEADINGS.find((h) => h.toLowerCase() === line.toLowerCase()) || (line === 'Sources used' ? 'Sources used' : null);
+    const normalizedLine = normalize(line);
+    const heading =
+      REQUIRED_HEADINGS.find((h) => normalize(h) === normalizedLine) ||
+      (normalize('Sources used') === normalizedLine ? 'Sources used' : null);
     if (heading) {
       current = heading;
       if (!sections[current]) sections[current] = '';
