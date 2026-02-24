@@ -3,9 +3,10 @@ import re
 from typing import Any
 
 try:
-    from openai import APIConnectionError, APIError, APITimeoutError, OpenAI, RateLimitError
+    from openai import APIConnectionError, APIError, APITimeoutError, OpenAI, OpenAIError, RateLimitError
 except Exception:  # pragma: no cover
     OpenAI = None
+    OpenAIError = Exception
     APIError = Exception
     APIConnectionError = Exception
     APITimeoutError = Exception
@@ -178,7 +179,7 @@ def generate_response(
             )
             model_text = completion.choices[0].message.content or ""
             return _ensure_template(model_text, retrieved_docs)
-        except (RateLimitError, APIError, APIConnectionError, APITimeoutError):
+        except (OpenAIError, RateLimitError, APIError, APIConnectionError, APITimeoutError):
             # Gracefully degrade to the local grounded fallback when the external model
             # is unavailable (quota, rate limit, transient network, etc.).
             pass
