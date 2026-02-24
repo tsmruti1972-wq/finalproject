@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import Papa from 'papaparse';
 
 import StructuredOutput from './components/StructuredOutput';
@@ -46,6 +46,7 @@ function buildChatPreview(responseText: string): string {
 }
 
 export default function App() {
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [taskType, setTaskType] = useState<TaskType>('variance_explanation');
   const [contextAssumptions, setContextAssumptions] = useState('');
   const [message, setMessage] = useState('');
@@ -213,10 +214,19 @@ export default function App() {
 
           <label className="label">File upload for CSV</label>
           <input
+            ref={fileInputRef}
+            className="hidden-file-input"
             type="file"
             accept=".csv"
             onChange={(e) => onFileUpload(e.target.files?.[0] ?? null)}
           />
+          <button
+            type="button"
+            className="secondary-btn"
+            onClick={() => fileInputRef.current?.click()}
+          >
+            Choose CSV File
+          </button>
           <button type="button" className="secondary-btn" onClick={loadDemoCsv}>
             Load Demo CSV
           </button>
@@ -229,7 +239,7 @@ export default function App() {
               <pre>{demoCsvPreview}</pre>
             </div>
           ) : null}
-          <p className="muted">{csvName}</p>
+          <p className="muted">Selected CSV: {csvName}</p>
 
           <label className="label">Context and assumptions</label>
           <textarea

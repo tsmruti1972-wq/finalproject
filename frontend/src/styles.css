@@ -98,7 +98,6 @@ body {
 
 textarea,
 select,
-input[type="file"],
 button {
   width: 100%;
   border: 1px solid var(--line);
@@ -144,6 +143,10 @@ button:disabled {
 .error {
   color: #a11a1a;
   margin: 4px 0 0;
+}
+
+.hidden-file-input {
+  display: none;
 }
 
 .demo-preview {
