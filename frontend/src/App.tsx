@@ -63,7 +63,8 @@ export default function App() {
   const loadDemoCsv = async () => {
     setError('');
     try {
-      const res = await fetch(`${import.meta.env.BASE_URL}demo-finance-variance.csv`);
+      const demoCsvUrl = `${import.meta.env.BASE_URL}demo-finance-variance.csv?v=20260224-1`;
+      const res = await fetch(demoCsvUrl, { cache: 'no-store' });
       if (!res.ok) {
         throw new Error('Could not load demo CSV.');
       }
@@ -97,7 +98,8 @@ export default function App() {
     }
     try {
       if (!demoCsvPreview) {
-        const res = await fetch(`${import.meta.env.BASE_URL}demo-finance-variance.csv`);
+        const demoCsvUrl = `${import.meta.env.BASE_URL}demo-finance-variance.csv?v=20260224-1`;
+        const res = await fetch(demoCsvUrl, { cache: 'no-store' });
         if (!res.ok) {
           throw new Error('Could not load demo CSV preview.');
         }
